@@ -13,6 +13,14 @@
 export const PROPERTY_NAME = 'Ranee';
 export const LOCATION_LABEL = 'Bondi Beach';
 
+// Agent contact, shown beside the hero wordmark. `tel` is the dialling format for the call link.
+export const AGENT = {
+  label: 'Contact agent',
+  name: 'Nicholas Breadman',
+  phone: '0407 551 446',
+  tel: '+61407551446',
+};
+
 export const COPY = {
   title: "'Ranee' – 576 sqm Freestanding Character Home with Pool, Moments to Bondi Beach",
   stats: ['5 Bed', '5 Bath', '2 Car + 2 (not on title)', '576 sqm'],

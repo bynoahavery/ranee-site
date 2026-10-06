@@ -58,6 +58,16 @@
     text('#viewer-name', data.viewer.name);
     text('#property-name', data.property.name);
     text('#property-location', data.property.location);
+
+    const agent = data.agent;
+    $('#agent').hidden = !agent;
+    if (agent) {
+      text('#agent-label', agent.label);
+      text('#agent-name', agent.name);
+      const phone = $('#agent-phone');
+      phone.textContent = agent.phone;
+      phone.href = `tel:${agent.tel}`;
+    }
     text('#copy-title', copy.title);
     text('#copy-intro', copy.intro);
     text('#copy-interiors', copy.interiors);

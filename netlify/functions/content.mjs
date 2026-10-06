@@ -1,5 +1,5 @@
 import { json, getViewer } from '../lib/core.mjs';
-import { COPY, PHOTOS, SECTION_HEADINGS, PROPERTY_NAME, LOCATION_LABEL, FEATURES_BACKDROP } from '../lib/content.mjs';
+import { COPY, PHOTOS, SECTION_HEADINGS, PROPERTY_NAME, LOCATION_LABEL, FEATURES_BACKDROP, AGENT } from '../lib/content.mjs';
 
 // Returns the property content to signed-in visitors only.
 export default async (req) => {
@@ -10,6 +10,7 @@ export default async (req) => {
   return json({
     viewer: { name: viewer.name },
     property: { name: PROPERTY_NAME, location: LOCATION_LABEL },
+    agent: AGENT,
     copy: COPY,
     headings: SECTION_HEADINGS,
     photos: PHOTOS,
