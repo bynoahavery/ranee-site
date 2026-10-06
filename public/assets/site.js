@@ -1,0 +1,281 @@
+(() => {
+  'use strict';
+
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const photoUrl = (id, size) => `/api/photo/${encodeURIComponent(id)}/${size}`;
+
+  let photos = [];   // ordered list from the server; also the slideshow order
+
+  // =======================================================================
+  // Rendering
+  // =======================================================================
+  function photoButton(photo, index, { wide = false, sizes, eager = false } = {}) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'photo' + (wide ? ' is-wide' : '');
+    btn.dataset.photo = photo.id;
+    btn.dataset.index = String(index);
+    btn.setAttribute('aria-haspopup', 'dialog');
+
+    const img = document.createElement('img');
+    img.alt = photo.alt;
+    img.width = 1600;
+    img.height = 1067;
+    img.decoding = 'async';
+    img.loading = eager ? 'eager' : 'lazy';
+    if (eager) img.fetchPriority = 'high';
+    img.sizes = sizes;
+    img.srcset = `${photoUrl(photo.id, 'sm')} 800w, ${photoUrl(photo.id, 'md')} 1600w`;
+    img.src = photoUrl(photo.id, 'md');
+    const reveal = () => img.classList.add('is-loaded');
+    if (img.complete && img.naturalWidth) reveal();
+    else img.addEventListener('load', reveal, { once: true });
+    img.addEventListener('error', reveal, { once: true });
+
+    btn.append(img);
+    btn.addEventListener('click', () => slideshow.open(index, btn));
+    return btn;
+  }
+
+  function renderGroup(container, group) {
+    const items = photos.map((p, i) => ({ p, i })).filter(({ p }) => p.group === group);
+    const halfSizes = '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw';
+    const wideSizes = '(max-width: 900px) 100vw, 66vw';
+    // Rhythm: one wide photo, then pairs; a lone photo at the end runs wide.
+    items.forEach(({ p, i }, n) => {
+      const isLastOdd = n === items.length - 1 && (items.length - 1) % 2 === 1;
+      const wide = n === 0 || isLastOdd;
+      container.append(photoButton(p, i, { wide, sizes: wide ? wideSizes : halfSizes }));
+    });
+  }
+
+  function render(data) {
+    photos = data.photos;
+    const { copy, headings } = data;
+    const text = (id, value) => { $(id).textContent = value; };
+
+    text('#viewer-name', data.viewer.name);
+    text('#property-name', data.property.name);
+    text('#property-location', data.property.location);
+    text('#copy-title', copy.title);
+    text('#copy-intro', copy.intro);
+    text('#copy-interiors', copy.interiors);
+    text('#copy-outdoors', copy.outdoors);
+    text('#copy-closing', copy.closing);
+    text('#h-interiors', headings.interiors);
+    text('#h-outdoors', headings.outdoors);
+    text('#h-features', headings.features);
+    text('#h-more', headings.more);
+    text('#h-location', headings.location);
+
+    const stats = $('#copy-stats');
+    stats.replaceChildren(...copy.stats.map((s) => Object.assign(document.createElement('li'), { textContent: s })));
+    const features = $('#copy-features');
+    features.replaceChildren(...copy.features.map((f) => Object.assign(document.createElement('li'), { textContent: f })));
+
+    // Decorative backdrop behind the features list (not tracked as a photo view)
+    const backdrop = $('#features-backdrop');
+    if (data.featuresBackdrop) backdrop.src = photoUrl(data.featuresBackdrop, 'md');
+    else backdrop.hidden = true;
+
+    const heroIndex = photos.findIndex((p) => p.group === 'hero');
+    const hero = $('#hero');
+    hero.replaceChildren();
+    if (heroIndex >= 0) hero.append(photoButton(photos[heroIndex], heroIndex, { sizes: '100vw', eager: true }));
+
+    for (const el of $$('[data-group]')) {
+      el.replaceChildren();
+      renderGroup(el, el.dataset.group);
+    }
+  }
+
+  // =======================================================================
+  // Full-screen slideshow
+  // =======================================================================
+  const slideshow = (() => {
+    const box = $('#lightbox');
+    const img = $('#lb-img');
+    const caption = $('#lb-caption');
+    const count = $('#lb-count');
+    let index = 0;
+    let opener = null;
+    let fullTimer = null;
+
+    const isOpen = () => !box.hidden;
+
+    function show(i) {
+      index = (i + photos.length) % photos.length;
+      const p = photos[index];
+
+      img.classList.add('is-switching');
+      img.alt = p.alt;
+      img.src = photoUrl(p.id, 'md'); // usually already cached from the gallery
+      img.onload = () => img.classList.remove('is-switching');
+      caption.textContent = p.title;
+      count.textContent = `${index + 1} of ${photos.length}`;
+
+      // Load the full-resolution file once a photo has been on screen briefly,
+      // so quickly flicking through doesn't download every large file.
+      clearTimeout(fullTimer);
+      fullTimer = setTimeout(() => {
+        const hi = new Image();
+        hi.onload = () => { if (photos[index].id === p.id) img.src = hi.src; };
+        hi.src = photoUrl(p.id, 'full');
+      }, 400);
+    }
+
+    function open(i, trigger) {
+      opener = trigger || document.activeElement;
+      box.hidden = false;
+      document.body.classList.add('no-scroll');
+      requestAnimationFrame(() => box.classList.add('is-open'));
+      show(i);
+      $('#lb-close').focus();
+    }
+
+    function close() {
+      if (!isOpen()) return;
+      clearTimeout(fullTimer);
+      box.classList.remove('is-open');
+      box.hidden = true;
+      document.body.classList.remove('no-scroll');
+      img.removeAttribute('src');
+      opener?.focus?.();
+    }
+
+    const next = () => show(index + 1);
+    const prev = () => show(index - 1);
+
+    $('#lb-close').addEventListener('click', close);
+    $('#lb-next').addEventListener('click', next);
+    $('#lb-prev').addEventListener('click', prev);
+    $('#lb-stage').addEventListener('click', (e) => { if (e.target.id === 'lb-stage') close(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      else if (e.key === 'Tab') {
+        // keep focus inside the dialog
+        const focusables = $$('button', box);
+        const first = focusables[0], last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // Touch swipe
+    let touchX = null, touchY = null;
+    box.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) { touchX = null; return; }
+      touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
+    }, { passive: true });
+    box.addEventListener('touchend', (e) => {
+      if (touchX == null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      const dy = e.changedTouches[0].clientY - touchY;
+      touchX = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? next : prev)();
+      else if (dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.5) close(); // swipe down to close
+    }, { passive: true });
+
+    return { open, close };
+  })();
+
+  // =======================================================================
+  // Sign-in / session
+  // =======================================================================
+  function showLogin(message = '') {
+    slideshow.close();
+    $('#site').hidden = true;
+    $('#login').hidden = false;
+    $('#login-error').textContent = message;
+    document.body.classList.remove('is-booting');
+    $('#name').focus();
+  }
+
+  function showSite(data) {
+    render(data);
+    $('#login').hidden = true;
+    $('#site').hidden = false;
+    document.body.classList.remove('is-booting');
+    window.scrollTo(0, 0);
+  }
+
+  async function loadContent() {
+    const res = await fetch('/api/content', { credentials: 'same-origin', cache: 'no-store' });
+    if (res.status === 401) return null;
+    if (!res.ok) throw new Error(`Content request failed (${res.status})`);
+    return res.json();
+  }
+
+  $('#login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nameEl = $('#name');
+    const passEl = $('#passcode');
+    const errEl = $('#login-error');
+    const submit = $('#login-submit');
+    nameEl.removeAttribute('aria-invalid');
+    passEl.removeAttribute('aria-invalid');
+
+    const name = nameEl.value.trim();
+    if (!name) {
+      errEl.textContent = 'Enter your name.';
+      nameEl.setAttribute('aria-invalid', 'true');
+      nameEl.focus();
+      return;
+    }
+    if (!passEl.value) {
+      errEl.textContent = 'Enter the passcode.';
+      passEl.setAttribute('aria-invalid', 'true');
+      passEl.focus();
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = 'Signing in…';
+    errEl.textContent = '';
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ name, passcode: passEl.value }),
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        errEl.textContent = result.error || 'Sign-in failed. Try again.';
+        const field = result.field === 'name' ? nameEl : passEl;
+        field.setAttribute('aria-invalid', 'true');
+        if (result.field === 'passcode') passEl.select();
+        field.focus();
+        return;
+      }
+      passEl.value = '';
+      const data = await loadContent();
+      if (!data) throw new Error('Signed in, but the session cookie was not kept. Check that cookies are allowed.');
+      showSite(data);
+    } catch (err) {
+      errEl.textContent = err.message || 'Could not reach the server. Check your connection and try again.';
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'View the home';
+    }
+  });
+
+  for (const btn of $$('[data-signout]')) {
+    btn.addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+      $('#name').value = '';
+      showLogin('');
+    });
+  }
+
+  // Boot
+  loadContent()
+    .then((data) => (data ? showSite(data) : showLogin()))
+    .catch(() => showLogin('Could not reach the server. Refresh the page to try again.'));
+})();

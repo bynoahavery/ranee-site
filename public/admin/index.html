@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Ranee — Sign-ins</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Marcellus&display=swap">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script src="/admin/admin.js" defer></script>
+</head>
+<body class="is-booting">
+  <section class="login" id="login" hidden aria-labelledby="login-heading">
+    <div class="login__brand">
+      <p class="login__wordmark" aria-hidden="true">Ranee</p>
+      <p class="login__place">Sign-ins</p>
+    </div>
+    <div class="login__panel">
+      <form class="login__form" id="login-form" novalidate>
+        <h2 id="login-heading">Sign in to the dashboard</h2>
+        <p class="login__lede">See who has signed in to view the property, and when.</p>
+        <div class="field">
+          <label for="passcode">Dashboard passcode</label>
+          <input id="passcode" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="form-error" id="login-error" role="alert" aria-live="assertive"></p>
+        <button class="button button--wide" type="submit" id="login-submit">Open dashboard</button>
+      </form>
+    </div>
+  </section>
+
+  <main id="dash" hidden>
+    <header class="topbar">
+      <span class="topbar__mark">Ranee <span class="dash-sub">Sign-ins</span></span>
+      <div class="topbar__viewer">
+        <button class="text-button" type="button" id="refresh">Refresh</button>
+        <a class="text-button" href="/api/admin/export" id="export">Download CSV</a>
+        <button class="text-button" type="button" id="signout">Sign out</button>
+      </div>
+    </header>
+
+    <div class="wrap dash">
+      <p class="dash-updated" id="updated" aria-live="polite"></p>
+
+      <dl class="summary" id="summary"></dl>
+
+      <section aria-labelledby="h-people">
+        <h2 class="dash-title" id="h-people">People</h2>
+        <p class="dash-help">Each visit is one sign-in. Sign-ins under the same name are counted as one person, ignoring capitals and extra spaces.</p>
+        <div class="table-scroll"><table class="table" id="people"></table></div>
+      </section>
+
+      <section aria-labelledby="h-signins">
+        <h2 class="dash-title" id="h-signins">All sign-ins</h2>
+        <div class="table-scroll"><table class="table" id="signins"></table></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

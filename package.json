@@ -1,0 +1,18 @@
+{
+  "name": "ranee-private-viewing",
+  "private": true,
+  "type": "module",
+  "description": "Private viewing site for 'Ranee', Bondi Beach, with sign-in and viewer tracking.",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
