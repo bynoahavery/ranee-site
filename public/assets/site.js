@@ -204,7 +204,7 @@
     $('#login').hidden = false;
     $('#login-error').textContent = message;
     document.body.classList.remove('is-booting');
-    $('#name').focus();
+    $('#first-name').focus();
   }
 
   function showSite(data) {
@@ -224,26 +224,22 @@
 
   $('#login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nameEl = $('#name');
-    const passEl = $('#passcode');
+    const fields = { firstName: $('#first-name'), lastName: $('#last-name'), passcode: $('#passcode') };
     const errEl = $('#login-error');
     const submit = $('#login-submit');
-    nameEl.removeAttribute('aria-invalid');
-    passEl.removeAttribute('aria-invalid');
+    const hasLetter = (v) => /\p{L}/u.test(v);
+    Object.values(fields).forEach((f) => f.removeAttribute('aria-invalid'));
+    const fail = (field, message) => {
+      errEl.textContent = message;
+      fields[field].setAttribute('aria-invalid', 'true');
+      fields[field].focus();
+    };
 
-    const name = nameEl.value.trim();
-    if (!name) {
-      errEl.textContent = 'Enter your name.';
-      nameEl.setAttribute('aria-invalid', 'true');
-      nameEl.focus();
-      return;
-    }
-    if (!passEl.value) {
-      errEl.textContent = 'Enter the passcode.';
-      passEl.setAttribute('aria-invalid', 'true');
-      passEl.focus();
-      return;
-    }
+    const firstName = fields.firstName.value.trim();
+    const lastName = fields.lastName.value.trim();
+    if (!hasLetter(firstName)) return fail('firstName', 'Enter your first name.');
+    if (!hasLetter(lastName)) return fail('lastName', 'Enter your last name.');
+    if (!fields.passcode.value) return fail('passcode', 'Enter the passcode.');
 
     submit.disabled = true;
     submit.textContent = 'Signing in…';
@@ -253,18 +249,15 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ name, passcode: passEl.value }),
+        body: JSON.stringify({ firstName, lastName, passcode: fields.passcode.value }),
       });
       const result = await res.json().catch(() => ({}));
       if (!res.ok) {
-        errEl.textContent = result.error || 'Sign-in failed. Try again.';
-        const field = result.field === 'name' ? nameEl : passEl;
-        field.setAttribute('aria-invalid', 'true');
-        if (result.field === 'passcode') passEl.select();
-        field.focus();
+        fail(fields[result.field] ? result.field : 'passcode', result.error || 'Sign-in failed. Try again.');
+        if (result.field === 'passcode') fields.passcode.select();
         return;
       }
-      passEl.value = '';
+      fields.passcode.value = '';
       const data = await loadContent();
       if (!data) throw new Error('Signed in, but the session cookie was not kept. Check that cookies are allowed.');
       showSite(data);
@@ -279,7 +272,8 @@
   for (const btn of $$('[data-signout]')) {
     btn.addEventListener('click', async () => {
       await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
-      $('#name').value = '';
+      $('#first-name').value = '';
+      $('#last-name').value = '';
       showLogin('');
     });
   }

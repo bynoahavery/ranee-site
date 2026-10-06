@@ -24,11 +24,17 @@
     <div class="login__panel">
       <form class="login__form" id="login-form" novalidate>
         <h2 id="login-heading">Sign in to view the home</h2>
-        <p class="login__lede">Enter your name and the passcode your agent gave you.</p>
+        <p class="login__lede">Enter your full name and the passcode your agent gave you.</p>
 
-        <div class="field">
-          <label for="name">Your name</label>
-          <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required>
+        <div class="field-row">
+          <div class="field">
+            <label for="first-name">First name</label>
+            <input id="first-name" name="firstName" type="text" autocomplete="given-name" maxlength="40" required>
+          </div>
+          <div class="field">
+            <label for="last-name">Last name</label>
+            <input id="last-name" name="lastName" type="text" autocomplete="family-name" maxlength="40" required>
+          </div>
         </div>
         <div class="field">
           <label for="passcode">Passcode</label>

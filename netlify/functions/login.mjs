@@ -1,5 +1,5 @@
 import {
-  json, passcodeMatches, configProblem, cleanName, clientIp, newId, createViewerCookie,
+  json, passcodeMatches, configProblem, cleanName, hasLetter, clientIp, newId, createViewerCookie,
   saveSignIn, isRateLimited, recordFailure, clearFailures, readJsonBody,
 } from '../lib/core.mjs';
 
@@ -15,8 +15,11 @@ export default async (req, context) => {
   let body;
   try { body = await readJsonBody(req); } catch { return json({ error: 'Invalid request.' }, 400); }
 
-  const name = cleanName(body.name);
-  if (!name) return json({ error: 'Enter your name.', field: 'name' }, 400);
+  const firstName = cleanName(body.firstName, 40);
+  const lastName = cleanName(body.lastName, 40);
+  if (!hasLetter(firstName)) return json({ error: 'Enter your first name.', field: 'firstName' }, 400);
+  if (!hasLetter(lastName)) return json({ error: 'Enter your last name.', field: 'lastName' }, 400);
+  const name = `${firstName} ${lastName}`;
 
   // Brute-force protection only: a short-lived, hashed per-connection counter.
   // Failed attempts are not recorded anywhere else.
@@ -32,7 +35,7 @@ export default async (req, context) => {
 
   // The only thing tracked: who signed in, and when.
   const sid = newId();
-  await saveSignIn({ sid, name, nameKey: name.toLowerCase(), at: new Date().toISOString() });
+  await saveSignIn({ sid, name, firstName, lastName, nameKey: name.toLowerCase(), at: new Date().toISOString() });
 
   return json({ ok: true, name }, 200, { 'Set-Cookie': createViewerCookie(req, { sid, name }) });
 };

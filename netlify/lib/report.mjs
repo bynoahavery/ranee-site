@@ -43,7 +43,7 @@ export async function buildCsv() {
     return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const sydney = (iso) => new Date(iso).toLocaleString('en-AU', { timeZone: 'Australia/Sydney', dateStyle: 'medium', timeStyle: 'short' });
-  const lines = ['sign_in_time_utc,sign_in_time_sydney,name'];
-  for (const s of [...signIns].reverse()) lines.push([s.at, sydney(s.at), s.name].map(cell).join(','));
+  const lines = ['sign_in_time_utc,sign_in_time_sydney,name,first_name,last_name'];
+  for (const s of [...signIns].reverse()) lines.push([s.at, sydney(s.at), s.name, s.firstName, s.lastName].map(cell).join(','));
   return '\ufeff' + lines.join('\r\n') + '\r\n';
 }

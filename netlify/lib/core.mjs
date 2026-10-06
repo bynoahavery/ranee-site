@@ -94,10 +94,12 @@ export function isAdmin(req) {
 }
 
 // --- Visitor name ------------------------------------------------------------
-export function cleanName(raw) {
+export function cleanName(raw, max = 80) {
   if (typeof raw !== 'string') return '';
-  return raw.replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
+  return raw.replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim().slice(0, max);
 }
+// A name part must contain at least one letter (any language), so "." or "-" won't pass.
+export const hasLetter = (s) => /\p{L}/u.test(s);
 
 // --- Client IP (used only for the hashed sign-in rate limit) -----------------
 export function clientIp(req, context) {

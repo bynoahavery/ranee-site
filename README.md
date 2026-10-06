@@ -21,7 +21,8 @@ one dependency (`@netlify/blobs`).
 
 ## What gets recorded
 
-Only successful sign-ins: **the name entered and the time**. Nothing else is
+Only successful sign-ins: **the first and last name entered, and the time**. Both name
+boxes are required and must contain at least one letter, checked on the server. Nothing else is
 recorded. That means no photo views, failed attempts, IP addresses, locations
 or devices.
 

@@ -89,6 +89,8 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
 .login__lede { margin: 0 0 2.25rem; color: var(--muted); }
 
 .field { margin-bottom: 1.5rem; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.25rem; }
+@media (max-width: 380px) { .field-row { grid-template-columns: 1fr; } }
 .field label { display: block; font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.4rem; }
 .field input {
   width: 100%;
