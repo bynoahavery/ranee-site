@@ -262,8 +262,9 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
 }
 .chapter__text { grid-column: 1 / span 4; position: sticky; top: 2rem; }
 .chapter__photos { grid-column: 5 / span 8; }
-.chapter--full .chapter__text { position: static; grid-column: 1 / span 6; }
+.chapter--full .chapter__text { position: static; grid-column: 1 / -1; }
 .chapter--full .chapter__photos { grid-column: 1 / -1; }
+.chapter--full .section-title { font-size: clamp(1.75rem, 3.5vw, 3.25rem); text-wrap: balance; }
 
 .section-title {
   font-family: var(--display);

@@ -54,7 +54,7 @@ export const SECTION_HEADINGS = {
   interiors: 'Inside',
   outdoors: 'Outside',
   features: 'Features',
-  more: 'Wellness, Guest Quarters and Garaging',
+  more: 'Wellness, Self Contained Accommodation and Garaging',
   floorplan: 'Floor plan',
   location: 'Location',
 };
