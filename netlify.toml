@@ -9,6 +9,9 @@
 [functions.photo]
   included_files = ["private/photos/**"]
 
+[functions.floorplan]
+  included_files = ["private/floorplan/**"]
+
 [[headers]]
   for = "/*"
   [headers.values]

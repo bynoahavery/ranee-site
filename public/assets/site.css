@@ -163,41 +163,58 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
 .hero .photo { height: min(86vh, 68vw); min-height: 22rem; aspect-ratio: auto; }
 .hero .photo img { object-position: center 55%; }
 
-.wordmark {
+/* Wordmark and agent contact, laid over the bottom of the hero photo */
+.hero { position: relative; }
+.hero__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: clamp(6rem, 14vw, 12rem) var(--gutter) clamp(1.25rem, 3vw, 2.75rem);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.28) 55%, rgba(0, 0, 0, 0));
+  color: #ffffff;
+  pointer-events: none; /* clicks pass through to open the slideshow */
+}
+.hero__inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0 var(--gutter);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  gap: 1rem 2rem;
 }
-.wordmark h1 {
+.hero__title {
   font-family: var(--wordmark);
   font-style: italic;
   font-weight: 400;
-  color: var(--accent);
-  font-size: clamp(5.5rem, 21vw, 19rem);
-  line-height: 0.78;
-  letter-spacing: -0.015em;
-  margin: -0.12em 0 0 -0.04em;
-  position: relative;
+  font-size: clamp(4.5rem, 15vw, 13rem);
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  margin: 0 0 -0.08em -0.03em;
+  color: #ffffff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
 }
-.wordmark__meta { margin-bottom: 0.6rem; text-align: right; }
-.wordmark__place { margin: 0; font-size: 1.125rem; color: var(--muted); }
-.agent { margin-bottom: 1.1rem; font-size: 0.9375rem; line-height: 1.5; }
+.agent {
+  pointer-events: auto;
+  text-align: right;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  padding-bottom: 0.5rem;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
 .agent p { margin: 0; }
-.agent__label { color: var(--muted); }
-.agent__line { color: var(--ink); }
+.agent__label { color: rgba(255, 255, 255, 0.78); }
+.agent__line { color: #ffffff; }
 .agent__line a {
   color: inherit;
   text-decoration: underline;
-  text-decoration-color: var(--tone-deep);
+  text-decoration-color: rgba(255, 255, 255, 0.55);
   text-underline-offset: 0.2em;
   white-space: nowrap;
 }
-.agent__line a:hover { text-decoration-color: var(--ink); }
+.agent__line a:hover { text-decoration-color: #ffffff; }
+@media (max-width: 700px) {
+  .hero__inner { flex-direction: column; align-items: flex-start; }
+  .agent { text-align: left; padding-bottom: 0; }
+}
 
 /* ------------------------------------------------------------- Layout */
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
@@ -337,13 +354,17 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
 }
 
 .location .photo { aspect-ratio: 16 / 9; }
-.closing {
-  font-family: var(--display);
-  font-size: clamp(1.375rem, 2.2vw, 1.875rem);
-  line-height: 1.4;
-  max-width: 34em;
-  margin: clamp(3rem, 6vw, 5rem) 0 0;
-}
+/* Same size as the section text under "Inside" and "Outside" */
+.closing { max-width: 34em; margin: clamp(2rem, 4vw, 3rem) 0 0; }
+
+.floorplan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.floorplan-head .section-title { margin-bottom: 0; }
+.photo--plan { aspect-ratio: 3508 / 2482; background: #ffffff; border: 1px solid var(--rule); }
+.photo--plan img { object-fit: contain; }
+.photo--plan:hover img { transform: none; }
+
+.disclaimer-wrap { margin-bottom: 1.5rem; }
+.disclaimer { margin: 0; max-width: 60em; font-size: 0.8125rem; line-height: 1.6; color: var(--muted); white-space: pre-line; }
 
 .footer {
   border-top: 1px solid var(--rule);
@@ -368,7 +389,6 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
   .stats li { padding: 0.75rem 0 0.75rem 1rem; border-bottom: 1px solid var(--rule); white-space: normal; }
   .stats li:nth-child(odd) { padding-left: 0; border-left: 0; }
   .topbar__viewer span { display: none; }
-  .wordmark__meta { text-align: left; }
 }
 
 /* ------------------------------------------------------------- Slideshow */

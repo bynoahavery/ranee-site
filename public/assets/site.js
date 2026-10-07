@@ -46,7 +46,9 @@
     items.forEach(({ p, i }, n) => {
       const isLastOdd = n === items.length - 1 && (items.length - 1) % 2 === 1;
       const wide = n === 0 || isLastOdd;
-      container.append(photoButton(p, i, { wide, sizes: wide ? wideSizes : halfSizes }));
+      const btn = photoButton(p, i, { wide, sizes: wide ? wideSizes : halfSizes });
+      if (group === 'floorplan') btn.classList.add('photo--plan');
+      container.append(btn);
     });
   }
 
@@ -57,7 +59,6 @@
 
     text('#viewer-name', data.viewer.name);
     text('#property-name', data.property.name);
-    text('#property-location', data.property.location);
 
     const agent = data.agent;
     $('#agent').hidden = !agent;
@@ -78,6 +79,15 @@
     text('#h-features', headings.features);
     text('#h-more', headings.more);
     text('#h-location', headings.location);
+    text('#h-floorplan', headings.floorplan || 'Floor plan');
+
+    const pdf = $('#floorplan-pdf');
+    pdf.hidden = !data.floorplanPdf;
+    if (data.floorplanPdf) pdf.href = data.floorplanPdf;
+
+    const disclaimer = $('#disclaimer');
+    disclaimer.textContent = data.disclaimer || '';
+    $('#disclaimer-wrap').hidden = !data.disclaimer;
 
     const stats = $('#copy-stats');
     stats.replaceChildren(...copy.stats.map((s) => Object.assign(document.createElement('li'), { textContent: s })));
@@ -91,8 +101,8 @@
 
     const heroIndex = photos.findIndex((p) => p.group === 'hero');
     const hero = $('#hero');
-    hero.replaceChildren();
-    if (heroIndex >= 0) hero.append(photoButton(photos[heroIndex], heroIndex, { sizes: '100vw', eager: true }));
+    hero.querySelector('.photo')?.remove(); // keep the wordmark overlay, replace only the photo
+    if (heroIndex >= 0) hero.prepend(photoButton(photos[heroIndex], heroIndex, { sizes: '100vw', eager: true }));
 
     for (const el of $$('[data-group]')) {
       el.replaceChildren();

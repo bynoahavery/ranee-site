@@ -23,7 +23,7 @@ export const AGENT = {
 
 export const COPY = {
   title: "'Ranee' – 576 sqm Freestanding Character Home with Pool, Moments to Bondi Beach",
-  stats: ['5 Bed', '5 Bath', '2 Car + 2 (not on title)', '576 sqm'],
+  stats: ['5 Bed', '5 Bath', '4 Car', '576 sqm'],
   intro:
     "Seamlessly blending period elegance with refined contemporary finishes, 'Ranee' is a distinguished 1920s residence offering five bedrooms, five bathrooms and a rare combination of space, privacy and lifestyle. Positioned on 576 sqm in a tranquil, tree-lined cul-de-sac, the home is within easy walking distance of Bondi Beach, boutique shops and cafés.",
   interiors:
@@ -54,9 +54,14 @@ export const SECTION_HEADINGS = {
   interiors: 'Inside',
   outdoors: 'Outside',
   features: 'Features',
-  more: 'Wellness, guest quarters and garaging',
+  more: 'Wellness, Guest Quarters and Garaging',
+  floorplan: 'Floor plan',
   location: 'Location',
 };
+
+// Disclaimer shown at the foot of the page. Leave empty ('') to hide it.
+export const DISCLAIMER =
+  "Disclaimer: All information contained herein has been gathered from sources we believe to be reliable, including the vendor. However, we cannot guarantee its accuracy, and no warranty or representation is given or implied. This material does not form part of any offer or contract. Interested persons should rely on their own enquiries and inspections, and should seek independent legal, financial and building advice before purchasing. All measurements, land areas and room dimensions are approximate. Photographs, styling and furniture are for illustrative purposes only and may not be included in the sale. Two car spaces are located in front of the existing garages and do not form part of the title. Any reference to development potential is subject to council approval (STCA).";
 
 export const PHOTOS = [
   { id: 'facade', group: 'hero', title: 'Front garden and facade',
@@ -72,9 +77,11 @@ export const PHOTOS = [
     alt: 'Formal lounge with deep teal walls, a brick fireplace with dark marble surround and wood heater, stained-glass cabinets, timber floors and floor-to-ceiling white bookshelves.' },
   { id: 'formal-dining', group: 'interiors', title: 'Formal dining',
     alt: 'Formal dining room with a dark timber table for eight, teal walls, an ornate ceiling rose, white built-in shelving with a bar, and stained-glass double doors open to a sunlit verandah.' },
-  { id: 'bedroom-palm', group: 'interiors', title: 'Bedroom (palm wallpaper)',
+  { id: 'bedroom-main', group: 'interiors', title: 'Bedroom',
+    alt: 'Bedroom with timber floors, white built-in wardrobes and overhead cabinetry framing the bed, and a bay window seat beneath original stained-glass windows.' },
+  { id: 'bedroom-palm', group: 'interiors', title: 'Bedroom',
     alt: 'Bedroom with timber floors, palm-print feature wallpaper, a white single bed, a desk beneath a sheer-curtained window and a hanging macramé chair.' },
-  { id: 'bedroom-mural', group: 'interiors', title: 'Bedroom (mural wall)',
+  { id: 'bedroom-mural', group: 'interiors', title: 'Bedroom',
     alt: 'Bedroom with timber floors, a basketball-themed mural feature wall, a white single bed, timber wall shelves and a sash window with striped curtains.' },
   { id: 'bathroom', group: 'interiors', title: 'Bathroom',
     alt: 'Bathroom with white mosaic wall tiles, a tiled-in bathtub with a chrome telephone-style mixer, chrome washstand basin, heated towel rail and a frosted sash window.' },
@@ -85,21 +92,24 @@ export const PHOTOS = [
     alt: 'Outdoor dining table set for dinner beside the brick wood-fired pizza oven and BBQ, with the kitchen’s marble servery window open onto the terrace.' },
   { id: 'alfresco-lounge', group: 'outdoors', title: 'Terrace and pizza oven',
     alt: 'Wide view of the louvred alfresco terrace at dusk, with curved sandstone retaining walls, lit garden beds, the dining table, wood-fired pizza oven and BBQ.' },
-  { id: 'pool', group: 'outdoors', title: 'Pool',
+  { id: 'pool', group: 'outdoors', title: 'Heated pool',
     alt: 'Swimming pool at dusk with sandstone steps and coping, a daybed on a raised ledge, a lit garden tree, and the open rear of the home glowing beyond.' },
   { id: 'lawn', group: 'outdoors', title: 'Level lawn',
     alt: 'Level lawn bordered by ivy-covered fences and tall palms, with a cushioned daybed on a sandstone platform and a hanging rattan egg chair.' },
 
   { id: 'gym', group: 'more', title: 'Home gym',
     alt: 'Home gym with rubber floor tiles, a treadmill, exercise bike and weights bench, white storage cupboards and a desk nook with an aquarium.' },
-  { id: 'guest-living', group: 'more', title: 'Guest accommodation living',
+  { id: 'guest-living', group: 'more', title: 'Self Contained Accommodation',
     alt: 'Living room of the self-contained accommodation, with a grey sofa on a jute rug, low white bookshelves, a wall-mounted TV and steps up to a bedroom alcove.' },
-  { id: 'guest-kitchenette', group: 'more', title: 'Guest accommodation kitchenette',
+  { id: 'guest-kitchenette', group: 'more', title: 'Self Contained Accommodation',
     alt: 'Kitchenette in the self-contained accommodation with black-and-white chequerboard floor tiles, white cabinetry, a stainless benchtop, a small round dining table and a garden-view window.' },
-  { id: 'garage', group: 'more', title: 'Garage',
+  { id: 'garage', group: 'more', title: 'Double Garaging',
     alt: 'Lock-up garage with a parked convertible, a timber workbench and pegboard tool wall, overhead storage racks and paint shelving.' },
 
-  { id: 'aerial', group: 'location', title: 'Aerial view to Bondi Beach',
+  { id: 'floor-plan', group: 'floorplan', title: 'Floor plan',
+    alt: 'Floor plan showing the ground floor with four bedrooms, kitchen, formal and informal living and dining; attic storage; the lower ground floor with bedroom 5, self-contained accommodation, sauna and storage; and a site plan with lawn, pool, spa and lock-up garage.' },
+
+  { id: 'aerial', group: 'location', title: 'Short Stroll to Bondi Beach',
     alt: 'Aerial photo looking towards Bondi Beach and the ocean, with an arrow marking the home’s terracotta roof in a leafy street a short walk from the beach.' },
 ];
 
