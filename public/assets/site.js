@@ -59,6 +59,9 @@
 
     text('#viewer-name', data.viewer.name);
     text('#property-name', data.property.name);
+    const address = $('#property-address');
+    address.textContent = data.property.address || '';
+    address.hidden = !data.property.address;
 
     const agent = data.agent;
     $('#agent').hidden = !agent;

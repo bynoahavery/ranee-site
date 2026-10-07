@@ -12,6 +12,8 @@
 
 export const PROPERTY_NAME = 'Ranee';
 export const LOCATION_LABEL = 'Bondi Beach';
+// Street address, shown under the wordmark on the hero photo.
+export const ADDRESS = '4 Forest Knoll Avenue, Bondi Beach';
 
 // Agent contact, shown beside the hero wordmark. `tel` is the dialling format for the call link.
 export const AGENT = {
